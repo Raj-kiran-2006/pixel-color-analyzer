@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Color Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pixel Color Analyzer</h1>
+            <p class="tagline">Upload an image, select a pixel, and get detailed color information</p>
+        </header>
+        
+        <div class="main-content">
+            <section class="upload-section">
+                <h2>Upload Image</h2>
+                <div class="file-input-wrapper">
+                    <div class="file-input-button">Choose Image</div>
+                    <input type="file" id="imageUpload" accept="image/*">
+                </div>
+                
+                <div class="instructions">
+                    <p><strong>How to use:</strong></p>
+                    <ol>
+                        <li>Upload an image using the button above</li>
+                        <li>Click on any area of the image to select a pixel</li>
+                        <li>View the color information in the panel below</li>
+                        <li>Your recently selected colors will be saved</li>
+                    </ol>
+                </div>
+                
+                <div class="recent-colors">
+                    <h2>Recent Colors</h2>
+                    <div class="color-grid" id="recentColors">
+                        <!-- Recent colors will be added here -->
+                    </div>
+                </div>
+            </section>
+            
+            <section class="preview-section">
+                <div class="image-preview" id="imagePreview">
+                    <p>Upload an image to get started</p>
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" id="zoomIn">+</button>
+                        <button class="zoom-btn" id="zoomOut">-</button>
+                    </div>
+                </div>
+                
+                <div class="color-info">
+                    <h2>Color Information</h2>
+                    <div class="color-display" id="colorDisplay"></div>
+                    
+                    <div class="color-details">
+                        <div class="detail-box">
+                            <h3>RGB VALUE</h3>
+                            <p id="rgbValue">RGB(0, 0, 0)</p>
+                        </div>
+                        <div class="detail-box">
+                            <h3>HEX CODE</h3>
+                            <p id="hexValue">#000000</p>
+                        </div>
+                        <div class="detail-box">
+                            <h3>COLOR NAME</h3>
+                            <p id="colorName">Black</p>
+                        </div>
+                        <div class="detail-box">
+                            <h3>HSL VALUE</h3>
+                            <p id="hslValue">HSL(0, 0%, 0%)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing image...</p>
+        </div>
+        
+        <footer>
+            <p>Pixel Color Analyzer | Created with Flask, HTML, CSS, and JavaScript</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
