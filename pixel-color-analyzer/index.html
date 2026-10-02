@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>ColorSpectrum Pro | Pixel Color Analyzer</title>
+  <link rel="icon" id="app-favicon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ColorSpectrum Pro home">
+      <span>ColorSpectrum<span class="brand-pro">Pro</span></span>
+    </a>
+    <nav class="mode-tabs" aria-label="Color analysis tools" role="tablist">
+      <button class="mode-tab is-active" type="button" role="tab" aria-selected="true" data-mode="upload"><span class="tab-icon" aria-hidden="true">↥</span> Image Upload</button>
+      <button class="mode-tab" type="button" role="tab" aria-selected="false" data-mode="camera"><span class="tab-icon" aria-hidden="true">◎</span> Camera</button>
+      <button class="mode-tab" type="button" role="tab" aria-selected="false" data-mode="search"><span class="tab-icon" aria-hidden="true">⌕</span> Online Search</button>
+      <button class="mode-tab" type="button" role="tab" aria-selected="false" data-mode="url"><span class="tab-icon" aria-hidden="true">↗</span> URL Loader</button>
+      <button class="mode-tab" type="button" role="tab" aria-selected="false" data-mode="convert"><span class="tab-icon" aria-hidden="true">⇄</span> Color Converter</button>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <div class="workspace-grid">
+      <section class="tool-card" aria-live="polite">
+        <div class="tool-heading">
+          <div class="heading-icon" aria-hidden="true">✦</div>
+          <div>
+            <h2 id="tool-title">Upload an image</h2>
+            <p id="tool-subtitle">Choose a photo and pick any pixel to reveal its color.</p>
+          </div>
+        </div>
+
+        <div class="tool-panel is-visible" data-panel="upload">
+          <label class="dropzone" id="dropzone" for="image-file">
+            <input id="image-file" type="file" accept="image/*">
+            <span class="upload-icon" aria-hidden="true">↥</span>
+            <strong>Drop your image here</strong>
+            <span class="dropzone-hint">or <span>browse files</span> on your device</span>
+            <span class="file-types">JPG, PNG, GIF, WEBP · up to 20 MB</span>
+          </label>
+          <div class="howto">
+            <h3>HOW IT WORKS</h3>
+            <ol>
+              <li><span>1</span>Upload an image using the button above</li>
+              <li><span>2</span>Click anywhere on the image to select a pixel</li>
+              <li><span>3</span>View color information in the panel below</li>
+              <li><span>4</span>Your recently selected colors are saved</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="tool-panel" data-panel="camera" hidden>
+          <div class="camera-info">
+            <span class="large-tool-icon" aria-hidden="true">◎</span>
+            <h3>See a color? Capture it.</h3>
+            <p>Start your camera, point it at something colorful, then click the preview to sample a pixel.</p>
+            <div class="button-row">
+              <button class="button button-primary" id="start-camera" type="button"><span aria-hidden="true">◎</span> Start camera</button>
+              <button class="button button-secondary" id="capture-camera" type="button" disabled>Capture image</button>
+            </div>
+            <p class="small-note">Camera access requires your permission and a secure connection (HTTPS or localhost).</p>
+          </div>
+        </div>
+
+        <div class="tool-panel" data-panel="search" hidden>
+          <label class="field-label" for="photo-search">SEARCH PHOTOS</label>
+          <div class="search-field">
+            <span aria-hidden="true">⌕</span>
+            <input id="photo-search" type="search" placeholder="Search thousands of free photos…" autocomplete="off">
+          </div>
+          <p class="small-note">Search Wikimedia Commons for free-use images. Open a photo source for its license details.</p>
+          <p class="search-status" id="search-status" role="status">Enter at least two characters to search.</p>
+          <div class="search-results" id="search-results" aria-live="polite"></div>
+          <button class="button button-secondary load-more-photos" id="load-more-photos" type="button" hidden>Load more photos</button>
+        </div>
+
+        <div class="tool-panel" data-panel="url" hidden>
+          <label class="field-label" for="image-url">IMAGE ADDRESS</label>
+          <div class="url-field">
+            <input id="image-url" type="url" placeholder="https://example.com/photo.jpg" autocomplete="url">
+            <button class="button button-primary" id="load-url" type="button">Load image</button>
+          </div>
+          <div class="url-tip"><span aria-hidden="true">ⓘ</span><p>Paste a direct link to an image. The image host must allow browser access (CORS) for pixel sampling to work.</p></div>
+          <p class="small-note" id="url-error" role="status"></p>
+        </div>
+
+        <div class="tool-panel" data-panel="convert" hidden>
+          <label class="field-label" for="color-input">ENTER A COLOR</label>
+          <div class="converter-inputs">
+            <input id="color-picker" type="color" value="#39c6a4" aria-label="Choose a color">
+            <input id="color-input" type="text" value="#39C6A4" spellcheck="false" aria-describedby="converter-error">
+            <button class="button button-primary" id="convert-color" type="button">Convert</button>
+          </div>
+          <p class="small-note">Enter HEX, RGB, or HSL — for example <code>#39C6A4</code>, <code>rgb(57, 198, 164)</code>, or <code>hsl(162, 56%, 50%)</code>.</p>
+          <p class="form-error" id="converter-error" role="status"></p>
+          <div class="format-list" id="format-list"></div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-heading">
+          <div>
+            <h2 id="preview-title">Image preview</h2>
+            <p id="image-name">Sample image · click to pick a color</p>
+          </div>
+          <span class="image-status"><span></span> READY TO SAMPLE</span>
+        </div>
+        <div class="preview-stage" id="preview-stage">
+          <canvas id="image-canvas" role="img" aria-label="Image preview. Click or tap to sample a pixel color."></canvas>
+          <video id="camera-video" autoplay playsinline muted hidden aria-label="Camera preview. Click to sample a pixel color."></video>
+          <div class="color-preview" id="color-preview" hidden>
+            <div class="color-preview-swatch" id="color-preview-swatch"></div>
+            <span id="color-preview-hex">Enter a color to preview it</span>
+          </div>
+          <div class="empty-preview" id="empty-preview" hidden>
+            <span aria-hidden="true">▧</span>
+            <p>Your selected image will appear here</p>
+          </div>
+          <div class="pick-hint" id="pick-hint"><span aria-hidden="true">＋</span> Click anywhere to pick a color</div>
+          <div class="magnifier" id="magnifier" hidden>
+            <div class="magnifier-color" id="magnifier-color"></div>
+            <span id="magnifier-hex">#000000</span>
+          </div>
+          <div class="preview-overlay" id="preview-overlay" hidden>
+            <span class="loader"></span>
+            <p>Loading image…</p>
+          </div>
+        </div>
+        <div class="preview-footer">
+          <span><span class="footer-dot"></span> <span id="image-dimensions">640 × 400 px</span></span>
+          <span>Click the image to sample <span class="crosshair" aria-hidden="true">⌖</span></span>
+        </div>
+      </section>
+
+      <section class="recent-card">
+        <div class="section-heading">
+          <div><h2>Recently Used Colors</h2><p>Your selected colors, saved on this device</p></div>
+          <button class="text-button" id="clear-colors" type="button">Clear all</button>
+        </div>
+        <div class="recent-colors" id="recent-colors">
+          <p class="empty-colors">Your sampled colors will appear here.</p>
+        </div>
+      </section>
+
+      <section class="color-card">
+        <div class="section-heading">
+          <div><h2>Color Information</h2><p id="color-prompt">Select a pixel or enter a color to see its values</p></div>
+        </div>
+        <div class="color-info-empty" id="color-info-empty">
+          <span aria-hidden="true">◉</span> No color selected
+        </div>
+        <div class="color-info" id="color-info" hidden>
+          <div class="selected-swatch" id="selected-swatch"></div>
+          <div class="color-values">
+            <div class="color-value"><span>HEX</span><strong id="hex-value">#000000</strong><button type="button" class="copy-button" data-copy="hex" aria-label="Copy HEX value">▢</button></div>
+            <div class="color-value"><span>RGB</span><strong id="rgb-value">0, 0, 0</strong><button type="button" class="copy-button" data-copy="rgb" aria-label="Copy RGB value">▢</button></div>
+            <div class="color-value"><span>HSL</span><strong id="hsl-value">0°, 0%, 0%</strong><button type="button" class="copy-button" data-copy="hsl" aria-label="Copy HSL value">▢</button></div>
+          </div>
+          <span class="copied-message" id="copied-message" role="status" aria-live="polite"></span>
+        </div>
+      </section>
+    </div>
+
+    <section class="dominant-card" aria-labelledby="dominant-title">
+      <div class="section-heading dominant-heading">
+        <div><h2 id="dominant-title">Dominant colors</h2><p>A small image sample keeps analysis fast · tap a swatch to inspect it</p></div>
+        <button class="button button-secondary" id="analyze-colors" type="button">Analyze image</button>
+      </div>
+      <div class="dominant-colors" id="dominant-colors" aria-live="polite">
+        <p class="empty-colors">Load an image to discover its most common colors.</p>
+      </div>
+    </section>
+
+    <footer class="app-footer"><span>ColorSpectrum Pro</span><span>Pixel-perfect color, wherever you find it.</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
